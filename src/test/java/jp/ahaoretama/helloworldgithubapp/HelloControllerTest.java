@@ -1,11 +1,13 @@
 package jp.ahaoretama.helloworldgithubapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -21,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(HelloController.class)
+@Log4j2
 public class HelloControllerTest {
 
     @Autowired
@@ -63,17 +66,65 @@ public class HelloControllerTest {
     }
 
     @Test
+    public void helloWorldNotWorkExceptActionCreated() throws Exception {
+        // Arrange
+        Event event = new Event();
+        event.setAction("edited");
+        String body = mapper.writeValueAsString(event);
+        log.info(body);
+
+        Map<String, String> expected = new HashMap<>();
+        expected.put("message", "This comment event is not a target");
+
+        // Act
+        this.mvc.perform(post("/hello-world").header("X-GitHub-Event","pull_request_review_comment").content(body).contentType(MediaType.APPLICATION_JSON))
+                // Assert
+                .andExpect(status().isOk())
+                .andExpect(content().string(mapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    public void helloWorldNotWorkExceptHelloComment() throws Exception {
+        // Arrange
+        Event event = new Event();
+        event.setAction("created");
+        Event.Comment comment = new Event.Comment();
+        comment.setText("GoodBye");
+        event.setComment(comment);
+        String body = mapper.writeValueAsString(event);
+        log.info(body);
+
+        Map<String, String> expected = new HashMap<>();
+        expected.put("message", "This comment event is not a target");
+
+        // Act
+        this.mvc.perform(post("/hello-world").header("X-GitHub-Event","pull_request_review_comment").content(body).contentType(MediaType.APPLICATION_JSON))
+                // Assert
+                .andExpect(status().isOk())
+                .andExpect(content().string(mapper.writeValueAsString(expected)));
+    }
+
+    @Test
     public void helloWorldAcceptPullRequestReviewCommentEvent() throws Exception {
         // Arrange
-        doNothing().when(service).createComment();
+        Event event = new Event();
+        event.setAction("created");
+        Event.Comment comment = new Event.Comment();
+        comment.setText("HelloWorld");
+        event.setComment(comment);
+        String body = mapper.writeValueAsString(event);
+        log.info(body);
+
+        doNothing().when(service).createComment(event);
+
         Map<String, String> expected = new HashMap<>();
         expected.put("message", "Commented to pull request");
 
         // Act
-        this.mvc.perform(post("/hello-world").header("X-GitHub-Event", "pull_request_review_comment"))
+        this.mvc.perform(post("/hello-world").header("X-GitHub-Event","pull_request_review_comment").content(body).contentType(MediaType.APPLICATION_JSON))
         // Assert
                 .andExpect(status().isOk())
                 .andExpect(content().string(mapper.writeValueAsString(expected)));
-        verify(service).createComment();
+        verify(service).createComment(event);
     }
 }

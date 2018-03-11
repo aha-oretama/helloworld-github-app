@@ -1,5 +1,10 @@
 package jp.ahaoretama.helloworldgithubapp;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Value;
+
 /**
  * @author aha-oretama
  */
@@ -451,6 +456,14 @@ package jp.ahaoretama.helloworldgithubapp;
 //    "site_admin": false
 //  }
 //}
-
+@Data
 public class Event {
+    private String action;
+    private Comment comment;
+
+    @Data
+
+    public static class Comment {
+        private String text;
+    }
 }
