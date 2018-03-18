@@ -2,6 +2,7 @@ package jp.ahaoretama.helloworldgithubapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(HelloController.class)
-@Log4j2
+@Slf4j
 public class HelloControllerTest {
 
     @Autowired
@@ -89,7 +90,7 @@ public class HelloControllerTest {
         Event event = new Event();
         event.setAction("created");
         Event.Comment comment = new Event.Comment();
-        comment.setText("GoodBye");
+        comment.setBody("GoodBye");
         event.setComment(comment);
         String body = mapper.writeValueAsString(event);
         log.info(body);
@@ -110,7 +111,7 @@ public class HelloControllerTest {
         Event event = new Event();
         event.setAction("created");
         Event.Comment comment = new Event.Comment();
-        comment.setText("HelloWorld");
+        comment.setBody("HelloWorld");
         event.setComment(comment);
         String body = mapper.writeValueAsString(event);
         log.info(body);

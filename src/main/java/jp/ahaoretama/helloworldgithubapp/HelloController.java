@@ -1,18 +1,17 @@
 package jp.ahaoretama.helloworldgithubapp;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.ServletWebRequest;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author aha-oretama
@@ -31,7 +30,7 @@ public class HelloController {
     }
 
     @PostMapping(value = "hello-world")
-    public Map<String, String> helloWorld(@RequestHeader(value = "X-GitHub-Event", required = false) String eventType, @RequestBody(required = false) Event event) {
+    public Map<String, String> helloWorld(@RequestHeader(value = "X-GitHub-Event", required = false) String eventType, @RequestBody(required = false) Event event) throws IOException, GeneralSecurityException {
         HashMap<String, String> response = new HashMap<>();
 
         // コメントかどうか？
@@ -41,15 +40,16 @@ public class HelloController {
         }
 
         // 対象のコメントかどうか？
-        if (!event.getAction().equals("created") || !event.getComment().getText().toLowerCase().startsWith("hello")) {
+        if (!event.getAction().equals("created") || !event.getComment().getBody().toLowerCase().startsWith("hello")) {
             response.put("message", "This comment event is not a target");
             return response;
         }
 
-        commentService.createComment(event);
+        boolean isCreated = commentService.createComment(event);
 
-        response.put("message", "Commented to pull request");
-        return response;
+        Map<String, String> message = new HashMap<>();
+        message.put("message", isCreated ? "Comment succeeded." : "Comment Failed.");
+        return message;
     }
 
 }

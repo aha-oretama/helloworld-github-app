@@ -1,5 +1,6 @@
 package jp.ahaoretama.helloworldgithubapp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -460,10 +461,25 @@ import lombok.Value;
 public class Event {
     private String action;
     private Comment comment;
+    @JsonProperty("pull_request")
+    private PullRequest pullRequest;
+    private Installation installation;
 
     @Data
-
     public static class Comment {
-        private String text;
+        private String id;
+        private String body;
+    }
+
+    @Data
+    public static class PullRequest {
+        private String number;
+        @JsonProperty("review_comments_url")
+        private String reviewCommentsUrl;
+    }
+
+    @Data
+    public static class Installation {
+        private String id;
     }
 }
