@@ -116,10 +116,10 @@ public class HelloControllerTest {
         String body = mapper.writeValueAsString(event);
         log.info(body);
 
-        doNothing().when(service).createComment(event);
+        doReturn(true).when(service).createComment(event);
 
         Map<String, String> expected = new HashMap<>();
-        expected.put("message", "Commented to pull request");
+        expected.put("message", "Comment succeeded.");
 
         // Act
         this.mvc.perform(post("/hello-world").header("X-GitHub-Event","pull_request_review_comment").content(body).contentType(MediaType.APPLICATION_JSON))
