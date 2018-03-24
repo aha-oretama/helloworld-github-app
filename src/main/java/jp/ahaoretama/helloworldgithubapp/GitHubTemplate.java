@@ -77,7 +77,7 @@ public class GitHubTemplate {
 
     private PrivateKey getPrivateKey() throws IOException, GeneralSecurityException {
         Resource resource = resourceLoader.getResource("classpath:priv8.pem");
-        return EncryptionUtil.getPrivateKey(Paths.get(resource.getURI()));
+        return EncryptionUtil.getPrivateKey(resource.getInputStream());
     }
 
     private String getJwt() throws IOException, GeneralSecurityException {

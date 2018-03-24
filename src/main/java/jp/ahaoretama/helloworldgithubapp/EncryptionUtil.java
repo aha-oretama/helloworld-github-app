@@ -1,8 +1,11 @@
 package jp.ahaoretama.helloworldgithubapp;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
@@ -17,6 +20,11 @@ public class EncryptionUtil {
 
     public static RSAPrivateKey getPrivateKey(Path path) throws IOException, GeneralSecurityException {
         String key = Files.readAllLines(path).stream().reduce((s, s2) -> String.join("\n", s, s2)).get();
+        return getPrivateKey(key);
+    }
+
+    public static RSAPrivateKey getPrivateKey(InputStream stream) throws IOException, GeneralSecurityException {
+        String key = IOUtils.toString(stream, Charset.defaultCharset());
         return getPrivateKey(key);
     }
 
