@@ -2,6 +2,7 @@ package jp.ahaoretama.helloworldgithubapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jp.ahaoretama.helloworldgithubapp.model.Event;
+import jp.ahaoretama.helloworldgithubapp.model.Token;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,7 @@ public class HelloControllerTest {
     private ObjectMapper mapper;
 
     @MockBean
-    private CommentService service;
+    private GitHubTemplate template;
 
     @Test
     public void pingReturnOk() throws Exception {
@@ -113,10 +114,16 @@ public class HelloControllerTest {
         Event.Comment comment = new Event.Comment();
         comment.setBody("HelloWorld");
         event.setComment(comment);
+        Event.Installation installation = new Event.Installation();
+        installation.setId("999");
+        event.setInstallation(installation);
         String body = mapper.writeValueAsString(event);
         log.info(body);
 
-        doReturn(true).when(service).createComment(event);
+        Token token = new Token();
+
+        doReturn(token).when(template).getAuthToken(event.getInstallation().getId());
+        doReturn(true).when(template).postReplyComment(event, token);
 
         Map<String, String> expected = new HashMap<>();
         expected.put("message", "Comment succeeded.");
@@ -126,6 +133,7 @@ public class HelloControllerTest {
         // Assert
                 .andExpect(status().isOk())
                 .andExpect(content().string(mapper.writeValueAsString(expected)));
-        verify(service).createComment(event);
+        verify(template).getAuthToken(event.getInstallation().getId());
+        verify(template).postReplyComment(event, token);
     }
 }
