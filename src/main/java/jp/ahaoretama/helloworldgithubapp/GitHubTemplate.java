@@ -6,6 +6,7 @@ import jp.ahaoretama.helloworldgithubapp.model.Event;
 import jp.ahaoretama.helloworldgithubapp.model.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpEntity;
@@ -33,6 +34,8 @@ import java.util.Map;
 @Slf4j
 public class GitHubTemplate {
 
+    @Value("${application.pem-file}")
+    private String PEM_FILE;
     private final RestTemplate restTemplate;
     private final ResourceLoader resourceLoader;
 
@@ -76,7 +79,7 @@ public class GitHubTemplate {
     }
 
     private PrivateKey getPrivateKey() throws IOException, GeneralSecurityException {
-        Resource resource = resourceLoader.getResource("classpath:priv8.pem");
+        Resource resource = resourceLoader.getResource("classpath:" + PEM_FILE);
         return EncryptionUtil.getPrivateKey(resource.getInputStream());
     }
 
