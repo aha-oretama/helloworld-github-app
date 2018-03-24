@@ -49,7 +49,7 @@ public class HelloControllerTest {
     @Test
     public void helloWorldNotAcceptNoHeader() throws Exception {
         Map<String, String> expected = new HashMap<>();
-        expected.put("message", "Event is not pull_request_review_comment");
+        expected.put("message", "Event is not issue_comment");
 
         this.mvc.perform(post("/hello-world"))
                 .andExpect(status().isOk())
@@ -59,7 +59,7 @@ public class HelloControllerTest {
     @Test
     public void helloWorldNotAcceptExceptReviewComment() throws Exception {
         Map<String, String> expected = new HashMap<>();
-        expected.put("message", "Event is not pull_request_review_comment");
+        expected.put("message", "Event is not issue_comment");
 
         this.mvc.perform(post("/hello-world").header("X-GitHub-Event","pull_request"))
                 .andExpect(status().isOk())
@@ -78,7 +78,7 @@ public class HelloControllerTest {
         expected.put("message", "This comment event is not a target");
 
         // Act
-        this.mvc.perform(post("/hello-world").header("X-GitHub-Event","pull_request_review_comment").content(body).contentType(MediaType.APPLICATION_JSON))
+        this.mvc.perform(post("/hello-world").header("X-GitHub-Event","issue_comment").content(body).contentType(MediaType.APPLICATION_JSON))
                 // Assert
                 .andExpect(status().isOk())
                 .andExpect(content().string(mapper.writeValueAsString(expected)));
@@ -99,7 +99,7 @@ public class HelloControllerTest {
         expected.put("message", "This comment event is not a target");
 
         // Act
-        this.mvc.perform(post("/hello-world").header("X-GitHub-Event","pull_request_review_comment").content(body).contentType(MediaType.APPLICATION_JSON))
+        this.mvc.perform(post("/hello-world").header("X-GitHub-Event","issue_comment").content(body).contentType(MediaType.APPLICATION_JSON))
                 // Assert
                 .andExpect(status().isOk())
                 .andExpect(content().string(mapper.writeValueAsString(expected)));
@@ -122,7 +122,7 @@ public class HelloControllerTest {
         expected.put("message", "Comment succeeded.");
 
         // Act
-        this.mvc.perform(post("/hello-world").header("X-GitHub-Event","pull_request_review_comment").content(body).contentType(MediaType.APPLICATION_JSON))
+        this.mvc.perform(post("/hello-world").header("X-GitHub-Event","issue_comment").content(body).contentType(MediaType.APPLICATION_JSON))
         // Assert
                 .andExpect(status().isOk())
                 .andExpect(content().string(mapper.writeValueAsString(expected)));

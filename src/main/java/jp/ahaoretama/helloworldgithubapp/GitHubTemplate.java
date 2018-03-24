@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.util.Date;
@@ -46,17 +45,16 @@ public class GitHubTemplate {
 
         HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<Token> response = restTemplate.exchange(String.format("https://api.github.com/installations/%s/access_tokens", installationId), HttpMethod.GET, requestEntity, Token.class);
+        ResponseEntity<Token> response = restTemplate.exchange(String.format("https://api.github.com/installations/%s/access_tokens", installationId), HttpMethod.POST, requestEntity, Token.class);
         return response.getBody();
     }
 
     public boolean postReplyComment(Event event, Token token) {
         Map<String, Object> args = new HashMap<>();
         args.put("body", "World!");
-        args.put("in_reply_to", event.getComment().getId());
 
         RequestEntity requestEntity = RequestEntity.
-                post(URI.create(event.getPullRequest().getReviewCommentsUrl()))
+                post(URI.create(event.getIssue().getCommentsUrl()))
                 .header("Authorization", "token " + token.getToken())
                 .body(args);
 

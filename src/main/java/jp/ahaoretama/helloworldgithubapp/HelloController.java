@@ -21,6 +21,7 @@ import java.util.Map;
 public class HelloController {
 
     private final CommentService commentService;
+    private static final String EVENT_TYPE ="issue_comment";
 
     @GetMapping("ping")
     public Map<String ,String> ping() {
@@ -34,8 +35,8 @@ public class HelloController {
         HashMap<String, String> response = new HashMap<>();
 
         // コメントかどうか？
-        if(StringUtils.isEmpty(eventType) || !eventType.equals("pull_request_review_comment")) {
-            response.put("message", "Event is not pull_request_review_comment");
+        if(StringUtils.isEmpty(eventType) || !eventType.equals(EVENT_TYPE)) {
+            response.put("message", "Event is not issue_comment");
             return response;
         }
 
