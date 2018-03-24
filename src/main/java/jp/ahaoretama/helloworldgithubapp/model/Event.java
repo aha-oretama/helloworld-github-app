@@ -1,4 +1,4 @@
-package jp.ahaoretama.helloworldgithubapp;
+package jp.ahaoretama.helloworldgithubapp.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

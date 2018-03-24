@@ -2,6 +2,8 @@ package jp.ahaoretama.helloworldgithubapp;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jp.ahaoretama.helloworldgithubapp.model.Event;
+import jp.ahaoretama.helloworldgithubapp.model.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;

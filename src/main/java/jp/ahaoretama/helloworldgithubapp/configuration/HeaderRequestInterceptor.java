@@ -1,4 +1,4 @@
-package jp.ahaoretama.helloworldgithubapp;
+package jp.ahaoretama.helloworldgithubapp.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpRequest;

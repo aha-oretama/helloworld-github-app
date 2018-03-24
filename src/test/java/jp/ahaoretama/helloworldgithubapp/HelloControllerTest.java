@@ -1,7 +1,7 @@
 package jp.ahaoretama.helloworldgithubapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.log4j.Log4j2;
+import jp.ahaoretama.helloworldgithubapp.model.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;

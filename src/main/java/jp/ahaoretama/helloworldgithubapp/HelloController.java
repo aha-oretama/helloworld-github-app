@@ -1,5 +1,7 @@
 package jp.ahaoretama.helloworldgithubapp;
 
+import jp.ahaoretama.helloworldgithubapp.model.Event;
+import jp.ahaoretama.helloworldgithubapp.model.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class HelloController {
 
-    private final CommentService commentService;
+    private final GitHubTemplate template;
     private static final String EVENT_TYPE ="issue_comment";
 
     @GetMapping("ping")
@@ -29,6 +31,12 @@ public class HelloController {
         response.put("message", "Ping is OK");
         return response;
     }
+
+    @GetMapping("valid")
+    public String getValid() throws IOException, GeneralSecurityException {
+        return template.getInstallation();
+    }
+
 
     @PostMapping(value = "hello-world")
     public Map<String, String> helloWorld(@RequestHeader(value = "X-GitHub-Event", required = false) String eventType, @RequestBody(required = false) Event event) throws IOException, GeneralSecurityException {
@@ -46,7 +54,8 @@ public class HelloController {
             return response;
         }
 
-        boolean isCreated = commentService.createComment(event);
+        Token authToken = template.getAuthToken(event.getInstallation().getId());
+        boolean isCreated =  template.postReplyComment(event, authToken);
 
         Map<String, String> message = new HashMap<>();
         message.put("message", isCreated ? "Comment succeeded." : "Comment Failed.");
